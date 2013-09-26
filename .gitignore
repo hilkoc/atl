@@ -1,0 +1,10 @@
+bin/
+obj/
+Debug/
+Release/
+*.[oa]
+*.so
+*/*.depend
+*.layout
+Alg*/*.cbp
+Alg*/*.cbp~
