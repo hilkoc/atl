@@ -1,0 +1,87 @@
+Setting up a Visual Studio solution
+These are notes on how to build the project with VS and keeping all the VS files out of the git repository.
+
+-------------------------create the VS projects-------------------------
+
+create dir 'workspace/'
+clone the project in this directory, thereby creating the directory 'workspace/atl/'
+create dir 'workspace/atl_VS/'
+
+open visual studio, create a new solution by creating a new project; File -> new project -> empty project
+create it in the 'workspace/atl_VS/' directory and call it 'Algebra_VS_Solution'
+
+Create a new project in this solution called 'Algebra_vsProject', use the option 'add to Solution', Win32 project -> dll.
+Create a new project in this solution called 'AlgebraTest_vsProject', use the option 'add to Solution', Win32 project -> console application.
+
+delete the empty Algebra_VS_Solution project.
+
+Now you have directories:
+
+'workspace/atl/'											(the contents of the git repo)
+'workspace/atl_VS/Algebra_VS_Solution'						(has Algebra_VS_solution.sln)
+'workspace/atl_VS/Algebra_VS_Solution/Algebra_vsProject'		(has Algebra_vsProject.vcxproj)
+'workspace/atl_VS/Algebra_VS_Solution/AlgebraTest_vsProject'	(has AlgebraTest_vsProject.vcxproj)
+
+Drag and drop the contents of 'atl/Algebra from file explorer to Algebra_vsProject.
+Drag and drop the contents of 'atl/Algebra.Test from file explorer to AlgebraTest_vsProject.
+
+-------------------------Modify pre compiled header file-------------------------
+Including the stdafx.h in every cpp file makes the code not cross-platform any more.
+Modify 'stdafx.h' (in Algebra_vsProject) make it look like:
+
+/* We use the contents of this header only on windows. 
+However, other cpp files must include this header, even when not compiling on Windows.
+
+doing something like this
+
+	#if defined(_WIN32) || defined(__WIN32__)
+	#  include "stdafx.h" //only for Windows
+	#endif
+
+won't compile on Windows.
+*/
+#if defined(_WIN32) || defined(__WIN32__)
+#pragma once
+
+#include "targetver.h"
+
+#define WIN32_LEAN_AND_MEAN  // Exclude rarely-used stuff from Windows headers
+// Windows Header Files:
+#include <windows.h>
+
+#endif
+
+
+-------------------------
+
+(For using precompiled header in windows:
+	You stdafx.cpp should include stdafx.h and be built using /Yc"stdafx.h".
+	Your other *.cpp files should include stdafx.h and be built using /Yu"stdafx.h".
+)
+
+We will build without a pre compiled header:
+
+Right click on the file stdafx.cpp and remove it from the Algebra_vsProject and then delete it.
+idem for stdafx.h
+idem for targetver.h
+idem for dllmain.cpp
+
+
+-------------------------Configure the AlgebraTest_vsProject project-------------------------
+
+Open AlgebraTest_vsProject properties.
+Configuration Properties -> C/C++ -> General --> Additional Include Directories :
+
+"C:\Program Files\boost\boost_1_57_0";D:\path\to\workspace\atl\Algebra;%(AdditionalIncludeDirectories)
+
+--make sure there are double quotes "" around the parts that have a space like "C:\Program Files\boost\boost_xx" .
+
+Configuration Properties -> VC++ Directories --> Library Directories :
+"C:\Program Files\boost\boost_1_57_0\stage\lib"
+
+also
+Common Properties -> Framework and References,  click 'Add New Reference...' and add Algebra_vsProject.
+
+to see more output messages from the test cases do
+Configuration Properties -> Debugging --> Command Arguments :
+ --log_level=message
