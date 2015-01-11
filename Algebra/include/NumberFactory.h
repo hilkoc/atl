@@ -10,8 +10,8 @@ class NumberFactory {
 public:
     virtual ~NumberFactory(){}
 
-    virtual Complex::Ptr createComplex(real_type realVal = 0, real_type imagVal =  0) const = 0;
-    virtual Group<Real>::Ptr createReal(real_type value = 0) const = 0;
+    virtual Field<Complex>::Ptr createComplex(real_type realVal = 0, real_type imagVal =  0) const = 0;
+    virtual Field<Real>::Ptr createReal(real_type value = 0) const = 0;
 
     virtual AbstractVector<Real>::ModulePtr createRealVector3(real_type x0=0, real_type x1=0, real_type x2=0) const = 0;
 

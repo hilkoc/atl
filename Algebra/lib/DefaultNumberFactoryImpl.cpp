@@ -5,12 +5,12 @@
 
 //implementation of DefaultNumberFactoryImpl
 
-Complex::Ptr DefaultNumberFactoryImpl::createComplex(real_type realVal , real_type imagVal ) const {
-    return Complex::Ptr(new ComplexNumber(realVal, imagVal));
+Field<Complex>::Ptr DefaultNumberFactoryImpl::createComplex(real_type realVal , real_type imagVal ) const {
+    return Field<Complex>::Ptr(new ComplexNumber(realVal, imagVal));
 }
 
-Group<Real>::Ptr DefaultNumberFactoryImpl::createReal(real_type value ) const {
-    return Group<Real>::Ptr(new RealNumber(value));
+Field<Real>::Ptr DefaultNumberFactoryImpl::createReal(real_type value ) const {
+    return Field<Real>::Ptr(new RealNumber(value));
 }
 
 

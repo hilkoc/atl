@@ -19,6 +19,7 @@ public:
 	//default assignment operator, RealNumber& operator=(RealNumber const & rhs);
 	
 	/* Ptr = Complex::Ptr */
+
 	virtual bool equals(const Ptr rhs) const  {
 		return re==rhs->getReal() && im == rhs->getImaginary();
 	}

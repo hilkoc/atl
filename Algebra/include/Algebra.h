@@ -9,12 +9,14 @@ template <typename T>
 class Group {
 public:
     virtual ~Group(){}
-    typedef std::shared_ptr<T> Ptr;
+
+	using Ptr = std::shared_ptr < T > ;
 
     virtual bool equals(const Ptr rhs) const = 0;
     virtual Ptr plus(const Ptr rhs) const = 0;
     virtual Ptr minus(const Ptr rhs) const = 0;
     //virtual Ptr minus() const = 0; //invalid covariant return type
+
     friend  bool operator==(const Ptr lhs, const Ptr rhs) {
         return lhs->equals(rhs);
     }
@@ -39,9 +41,9 @@ template <typename R, typename M = R>
 class Module : public virtual Group<M> {
 public:
     virtual ~Module(){}
-    //g++ doesn't understand that 'Ptr' is Group<T>::Ptr
-    typedef typename Group<M>::Ptr ModulePtr;
-    typedef typename Group<R>::Ptr  RingPtr;
+
+	using ModulePtr = typename Group<M>::Ptr;
+	using RingPtr = typename Group<R>::Ptr;
 
     virtual ModulePtr scalarTimes(const RingPtr rhs) const = 0;
 
@@ -51,32 +53,37 @@ public:
 };
 
 
-/** Template specialization to create a Ring.
+/** 
  *  A Ring is a Group with multiplication.
- *  The function 'scalarTimes' is removed in favour of just 'times'.
- *  Also division is added, but this is only possible if the denominator is invertible.
+ *  It is also an R module over itself.
+ *  We also define a division method, but division is only possible if the denominator is invertible.
  */
 template <typename R>
-class Module<R,R> : public virtual Group<R> {
+class Ring : public virtual Module< R, R > {
 public:
-    virtual ~Module(){}
-    typedef Module<R,R> Ring; //in c++11 we can replace this with alias declaration
+    virtual ~Ring(){}
 
-    //g++ doesn't understand that 'Ptr' is Group<T>::Ptr
-    typedef typename Group<R>::Ptr  Ptr;
-
-    /** Removed 'scalarTimes' in favour of just 'times'*/
+	using Ptr = typename Group<R>::Ptr;
+    
     virtual Ptr times(const Ptr rhs) const = 0;
     virtual Ptr divide(const Ptr rhs) const = 0; //may throw if rhs is not invertible
 
-    friend  Ptr operator*(const Ptr lhs, const Ptr rhs) {
-        return lhs->times(rhs);
-    }
+	/** Implement scalarTimes function from the Module interface to ensure it is consistent with times.
+	 *  This also ensure that operator* defined in Module:: works as expected.
+	 */
+	inline virtual ModulePtr scalarTimes(const RingPtr rhs) const {
+		return this->times(rhs);
+	}
+
     friend  Ptr operator/(const Ptr lhs, const Ptr rhs) { //may throw if rhs is not invertible
         return lhs->divide(rhs);
     }
 };
 
-//template <typename R> using Ring = Module<R,R>;
+
+/**
+ * A field is a commutative ring, where every element besides zero has a multiplicative inverse.
+ */
+template <typename F> using Field = Ring<F>;
 
 #endif // ALGEBRA_H
