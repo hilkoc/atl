@@ -14,18 +14,18 @@ Field<Real>::Ptr DefaultNumberFactoryImpl::createReal(real_type value ) const {
 }
 
 
-AbstractVector<Real>::ModulePtr DefaultNumberFactoryImpl::createRealVector3(real_type x0, real_type x1, real_type x2) const {
-    int const n = AbstractVector<Real>::getDimension();
-    AbstractVector<Real>::RingPtr* entries = new AbstractVector<Real>::RingPtr[n];
-    entries[0] = AbstractVector<Real>::RingPtr(new RealNumber(x0));
-    entries[1] = AbstractVector<Real>::RingPtr(new RealNumber(x1));
-    entries[2] = AbstractVector<Real>::RingPtr(new RealNumber(x2));
-    AbstractVector<Real>::ModulePtr result(new vec::Vector<Real>(entries));
+Vector<Real,3>::ModulePtr DefaultNumberFactoryImpl::createRealVector3(real_type x0, real_type x1, real_type x2) const {
+    int const n = Vector<Real,3>::getDimension();
+    Vector<Real,3>::RingPtr* entries = new Vector<Real,3>::RingPtr[n];
+    entries[0] = Vector<Real,3>::RingPtr(new RealNumber(x0));
+    entries[1] = Vector<Real,3>::RingPtr(new RealNumber(x1));
+    entries[2] = Vector<Real,3>::RingPtr(new RealNumber(x2));
+    Vector<Real,3>::ModulePtr result(new vec::VectorImpl<Real,3>(entries));
     delete[] entries;
     return result;
  }
 
-NumberFactory::DualPtr DefaultNumberFactoryImpl::createDualVector(const AbstractVector<Real>::ModulePtr vectr) const {
+NumberFactory::DualPtr DefaultNumberFactoryImpl::createDualVector(const Vector<Real,3>::ModulePtr vectr) const {
     NumberFactory::DualPtr result;
     return result;
 }

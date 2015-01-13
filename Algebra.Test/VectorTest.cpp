@@ -6,11 +6,11 @@ BOOST_AUTO_TEST_SUITE(testVectorSuite)
 
 BOOST_AUTO_TEST_CASE(testVector) {
 	using namespace std;
-	int dimension = AbstractVector<Real>::getDimension();
+	int dimension = Vector<Real,3>::getDimension();
 	BOOST_CHECK_EQUAL(dimension, 3);
 	NumberFactory const & factory = DefaultNumberFactoryImpl();
 
-	typedef AbstractVector<Real>::ModulePtr RealVector3;
+	typedef Vector<Real,3>::ModulePtr RealVector3;
 	RealVector3 zero(factory.createRealVector3());
 	RealVector3 foo(factory.createRealVector3(2,6,8));
 	RealVector3 bar(factory.createRealVector3(3.75,10,0));

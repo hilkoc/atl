@@ -3,15 +3,18 @@
 
 #include "Algebra.h"
 
-template<typename R, int D=3>
-class AbstractVector : public virtual Module<R, AbstractVector<R,D> > {
+/**
+ * A free module of finite rank D over a Ring R.
+ */
+template<typename R, int D >
+class FreeModule : public virtual Module < R, FreeModule<R, D> > {
 protected:
     static int const dim = D;
 public:
-    virtual ~AbstractVector(){}
-    typedef AbstractVector<R,D> type;
-    typedef typename Module<R, AbstractVector<R,D> >::ModulePtr ModulePtr;
-    typedef typename Module<R, AbstractVector<R,D> >::RingPtr   RingPtr;
+	virtual ~FreeModule(){}
+	typedef FreeModule<R, D> type;
+	typedef typename Module<R, FreeModule<R, D> >::ModulePtr ModulePtr;
+	typedef typename Module<R, FreeModule<R, D> >::RingPtr   RingPtr;
 
     static int const getDimension() {
         return dim;
@@ -24,7 +27,7 @@ public:
     // prototypes for Module<R,M>
     virtual ModulePtr scalarTimes(const RingPtr rhs) const = 0;
 
-    //prototypes for AbstractVector
+    //prototypes for FreeModule
     /** Return the coordinate at given index*/
     virtual RingPtr get(int const index) const = 0;
 
@@ -38,9 +41,17 @@ public:
     friend std::ostream&  operator<<(std::ostream& out, ModulePtr const rhs) {
         return out << *rhs;
     }
-    friend std::ostream&  operator<< (std::ostream& out, AbstractVector const & rhs) {
+	friend std::ostream&  operator<< (std::ostream& out, FreeModule const & rhs) {
         return rhs.toCout(out);
     }
 };
+
+
+/**
+* A vector space is a free module over a field.
+* F a field, D the dimension.
+*/
+template < typename F, int D >
+using Vector = FreeModule < F, D >;
 
 #endif // LINEARALGEBRA_H

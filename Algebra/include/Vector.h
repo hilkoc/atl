@@ -5,17 +5,19 @@
 
 namespace vec {
 
-/*We must assume that T is a Ring, so has type Module<T>::Ring*/
+/**
+ * Assume that T is a Ring.
+ */
 template<typename T, int D=3>
-class Vector : public AbstractVector<T,D> {
+class VectorImpl : public FreeModule<T,D> {
 
 public:
-    typedef typename AbstractVector<T,D>::ModulePtr ModulePtr;
-    typedef typename AbstractVector<T,D>::RingPtr RingPtr;
+    typedef typename FreeModule<T,D>::ModulePtr ModulePtr;
+    typedef typename FreeModule<T,D>::RingPtr RingPtr;
 
 protected:
-    //stupid we need to redefine dim or use the longer AbstractVector<T,D>::dim instead
-    static int const dim = AbstractVector<T,D>::dim;
+    //stupid we need to redefine dim or use the longer FreeModule<T,D>::dim instead
+    static int const dim = FreeModule<T,D>::dim;
     // Could also use std::array<RingPtr> instead
     RingPtr entries[dim];
 
@@ -26,24 +28,24 @@ protected:
         }
     }
 public:
-    virtual ~Vector();
-    Vector() {
+	virtual ~VectorImpl();
+	VectorImpl() {
     //entries hold garbage now
     }
 
     // EQUIVALENT Vector(const T* array) {
-    Vector(const RingPtr array[dim]) {
+	VectorImpl(const RingPtr array[dim]) {
         copyEntries(array);
     }
 
     //copy contructor
-    Vector(const Vector<T,D>& rhs) {
+	VectorImpl(const Vector<T, D>& rhs) {
         entries = new T[dim];
         std::cout << "vec copy constructor" << std::endl;
         copyEntries(rhs.entries);
     }
     //assignment operator
-    Vector& operator= (const Vector<T,D>& rhs) {
+	VectorImpl& operator= (const VectorImpl<T, D>& rhs) {
         std::cout << "vec assignment operator" << std::endl;
         if(this == &rhs) {
             return *this;
@@ -62,7 +64,7 @@ public:
     virtual ModulePtr minus(const ModulePtr rhs) const;
     // prototypes for Module<R,M>
     virtual ModulePtr scalarTimes(const RingPtr rhs) const;
-    // prototypes for AbstractVector<R,D>
+    // prototypes for FreeModule<R,D>
     virtual RingPtr get(int const index) const {
         return entries[index];
     }
